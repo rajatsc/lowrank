@@ -1,3 +1,4 @@
 data/*
 spike/
 .idea/
+__pycache__/
