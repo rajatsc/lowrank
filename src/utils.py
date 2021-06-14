@@ -5,6 +5,8 @@ class VideoIO:
     def __init__(self, file_path):
         self.file_path = file_path
         self.cap = cv2.VideoCapture(self.file_path)
+        self.fps = self.cap.get(cv2.CAP_PROP_FPS)
+        self.frame_count = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     def teardown(self):
         if self.cap:
@@ -27,9 +29,6 @@ class VideoIO:
             count = count + 1
 
         return np.asarray(frames_list)
-
-    def get_fps(self):
-        return self.cap.get(cv2.CAP_PROP_FPS)
 
     @staticmethod
     def convert_grayscale(frame):

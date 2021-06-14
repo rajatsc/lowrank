@@ -1,5 +1,8 @@
 data/*
+!data/data.md
+data/*
 spike/
 .idea/
 __pycache__/
-notebooks/.ipynb_checkpoints
+notebooks/.ipynb_checkpoints/
+src/__pycache__

@@ -2,14 +2,15 @@ import numpy as np
 
 class DMD:
     def __init__(self, projected=True):
-        self.snapshots = None
         self.projected = projected
+        self.snapshots = None
         self.eigenvalues = None
         self.eigenvectors = None
         self.omegas = None
         self.modes = None
         self.coefficients = None
         self.dt = None
+        self.dim = None
 
     def solve(self, x, dt):
         """
@@ -18,6 +19,8 @@ class DMD:
         :param rank:
         :return:
         """
+        self.clear()
+        self.dim = x.shape[1:]
         x = DMD.create_tallskinny(x)
         self.snapshots = x
         self.dt = dt
@@ -82,8 +85,22 @@ class DMD:
         y2 = y1 * self.coefficients[:, None]
         return masked_modes.dot(y2)
 
-    def create_mask(self, threshold = 0.1):
+    def create_mask(self, threshold = 1):
         return np.abs(self.omegas) < threshold
+
+    def clear(self):
+        self.snapshots = None
+        self.eigenvalues = None
+        self.eigenvectors = None
+        self.omegas = None
+        self.modes = None
+        self.coefficients = None
+        self.dt = None
+        self.dim = None
+
+    def plot_omegas(self, ax):
+        return ax.scatter(np.real(self.omegas), np.imag(self.omegas))
+
 
     @staticmethod
     def create_tallskinny(x):
