@@ -4,7 +4,8 @@ data/*
 spike/
 .idea/
 __pycache__/
-notebooks/.ipynb_checkpoints/
+.ipynb_checkpoints
 src/__pycache__
 notebooks/*.png
 examples/*.mp4
+notebooks/.
