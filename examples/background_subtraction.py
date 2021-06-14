@@ -3,8 +3,10 @@ import cv2
 
 # add ../src to system path
 import matplotlib.pyplot as plt
+from matplotlib import animation
 from matplotlib.animation import FuncAnimation
 plt.rcParams['font.size'] = '8'
+plt.rcParams['animation.ffmpeg_path'] = '/home/rajat/Applications/anaconda3/bin/ffmpeg'
 import numpy as np
 
 parent_path = os.path.dirname(os.getcwd())
@@ -17,27 +19,27 @@ from utils import VideoIO
 def find_model(vid, model, start):
     # find the DMD modes for the first 30 models
     x = vid.stack_frames(start, num_snapshots, gray=True)
-    model.solve(x, 1 / (vid.fps - 1))
+    model.solve(x, 1 / (vid.fps - 1), rank=num_snapshots-1)
     # create mask and evolve
     mask = model.create_mask(threshold=0.1)
     x_approx_lowrank = model.evolve(mask=mask)
-
     return model, x_approx_lowrank
 
 if __name__ == "__main__":
 
-    videofile = 'a.mp4'
+    videofile = 'b.mp4'
     video_path = os.path.join(parent_path, 'data', videofile)
     start = 351
-    num_snapshots = 20
+    num_snapshots = 30
     projected = True
 
     vid = VideoIO(video_path)
     model = DMD(projected = projected)
 
+    stop = min(vid.frame_count, 2000)
     start_list = []
     start_copy = start + num_snapshots
-    while start_copy + num_snapshots <= vid.frame_count:
+    while start_copy + num_snapshots <= stop:
         start_list.append(start_copy)
         start_copy = start_copy + num_snapshots
     start_set = set(start_list)
@@ -63,7 +65,7 @@ if __name__ == "__main__":
     img_sparse_copy[img_sparse_copy > 0] = 0
 
     img_sparse = img_sparse + np.abs(img_sparse_copy)
-    img_sparse = img_sparse * 10
+    #img_sparse = img_sparse * 10
     img_lowrank = img_lowrank + img_sparse_copy
 
     im1 = axs[0].imshow(img.reshape(model.dim), animated=True, cmap='gray')
@@ -90,7 +92,7 @@ if __name__ == "__main__":
         img_sparse_copy[img_sparse_copy > 0] = 0
 
         img_sparse = img_sparse + np.abs(img_sparse_copy)
-        img_sparse = img_sparse * 10
+        #img_sparse = img_sparse * 10
         img_lowrank = img_lowrank + img_sparse_copy
 
         im1.set_array(img.reshape(model.dim))
@@ -103,9 +105,12 @@ if __name__ == "__main__":
                          animate,
                          frames=np.arange(start=start, stop=start_list[-1]+num_snapshots),
                          interval=5,
-                         blit=True)
+                         blit=True,
+                         repeat=False)
 
     plt.show()
+    #FFwriter = animation.FFMpegWriter(fps=30)
+    #anim.save('b_animation.mp4', writer=FFwriter)
 
 
 

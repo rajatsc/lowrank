@@ -12,7 +12,7 @@ class DMD:
         self.dt = None
         self.dim = None
 
-    def solve(self, x, dt):
+    def solve(self, x, dt, rank):
         """
         :param x:
         :param dt:
@@ -29,9 +29,9 @@ class DMD:
 
         u, s, v = np.linalg.svd(x1, full_matrices=False)
         v = v.T
-        #u = u[:, :rank]
-        #v = v[:, :rank]
-        #s = s[:rank]
+        u = u[:, :rank]
+        v = v[:, :rank]
+        s = s[:rank]
 
         a_tilde = np.linalg.multi_dot([u.T, x2, v]) * np.reciprocal(s)
         eigenvalues, eigenvectors = np.linalg.eig(a_tilde)
@@ -85,7 +85,7 @@ class DMD:
         y2 = y1 * self.coefficients[:, None]
         return masked_modes.dot(y2)
 
-    def create_mask(self, threshold = 1):
+    def create_mask(self, threshold = 0.1):
         return np.abs(self.omegas) < threshold
 
     def clear(self):

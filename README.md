@@ -4,7 +4,9 @@ This repository contains implementations of different low rank approximation/ di
 
 ## Algorithms
 
-1. DMD 
+1. **Dynamic Mode Decomposition**
+
+2. **Robust Principal Component Analysis**
 
 ## Data
 
