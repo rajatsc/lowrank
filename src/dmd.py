@@ -1,7 +1,7 @@
 import numpy as np
 
 class DMD:
-    def __init__(self, projected=True):
+    def __init__(self, projected=False):
         self.projected = projected
         self.snapshots = None
         self.eigenvalues = None
